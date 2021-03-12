@@ -11,7 +11,7 @@ class FirebaseAuthService {
         _googleSignIn = googleSignIn ?? GoogleSignIn();
 
   //Google Sign-In
-  Future<User> signInWithGoogle() async {
+  Future<UserCredential> signInWithGoogle() async {
     // Initialize Firebase
     await Firebase.initializeApp();
 
@@ -25,7 +25,7 @@ class FirebaseAuthService {
       idToken: googleSignInAuthentication.idToken,
     );
 
-    return (await _auth.signInWithCredential(credential)).user;
+    return _auth.signInWithCredential(credential);
   }
 
   Future<void> signOut() async {
@@ -43,15 +43,15 @@ class FirebaseAuthService {
         .user;
   }
 
-  Future<User> signInWithEmailPassword(String email, String password) async {
+  Future<UserCredential> signInWithEmailPassword(
+      String email, String password) async {
     // Initialize Firebase
     await Firebase.initializeApp();
 
-    return (await _auth.signInWithEmailAndPassword(
+    return _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
-    ))
-        .user;
+    );
   }
 
   bool isSignedIn() {

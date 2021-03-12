@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web_firebase/core/expections/route_exception.dart';
 import 'package:flutter_web_firebase/features/authentication/login_view.dart';
+import 'package:flutter_web_firebase/features/home/home_view.dart';
 
 enum Screens { LOGIN, HOME }
 
@@ -16,7 +17,7 @@ class AppRouter {
             builder: (context) => LoginView(), settings: route.arguments);
       case Screens.HOME:
         return MaterialPageRoute(
-            builder: (context) => LoginView(), settings: route.arguments);
+            builder: (context) => HomeView(), settings: route.arguments);
       default:
         throw RouteException('Route Not Found!');
     }

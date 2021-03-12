@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_web_firebase/features/authentication/widgets/animated_background.dart';
+import 'package:flutter_web_firebase/router/app_router.dart';
+import 'package:flutter_web_firebase/utils/glass_container.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'bloc/login_bloc.dart';
@@ -61,95 +63,103 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Card(
-        elevation: 32,
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-        child: Container(
-          color: Colors.white,
-          height: 600,
-          width: 1200,
-          child: Row(
-            children: [
-              Expanded(
-                  child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  AnimatedBackground(),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child:
-                        Image.asset('lib/resources/images/img-teksna-logo.png'),
-                  ),
-                ],
-              )),
-              Expanded(
-                flex: 1,
-                child: Container(
-                  padding: EdgeInsets.all(24),
-                  child: BlocConsumer<LoginBloc, LoginState>(
-                    listener: (context, state) {
-                      if (state.isSuccess) {
-                        Scaffold.of(context).showSnackBar(
-                            SnackBar(content: Text("Logged In Successfully.")));
-                      }
-                    },
-                    builder: (context, state) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "Sign In",
-                            style: TextStyle(
-                                fontSize: 32, fontWeight: FontWeight.w800),
-                          ),
-                          SizedBox(
-                            height: 40,
-                          ),
-                          TextFormField(
-                            controller: _emailController,
-                            autocorrect: false,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (value) =>
-                                state.isEmailValid ? null : 'Invalid Username',
-                            decoration: InputDecoration(labelText: "Username"),
-                          ),
-                          SizedBox(
-                            height: 24,
-                          ),
-                          TextFormField(
-                            controller: _passwordController,
-                            autocorrect: false,
-                            obscureText: true,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (value) => state.isPasswordValid
-                                ? null
-                                : 'Invalid Password',
-                            decoration: InputDecoration(labelText: "Password"),
-                          ),
-                          SizedBox(
-                            height: 32,
-                          ),
-                          TextButton(
-                              onPressed:
-                                  state.isFormValid ? _onLoginPressed : null,
-                              child: Text("LOGIN")),
-                          SizedBox(
-                            height: 16,
-                          ),
-                          GoogleLoginButton(),
-                        ],
-                      );
-                    },
-                  ),
-                ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          AnimatedBackground(),
+          GlassContainer(
+            boxBorder: Border.all(color: Colors.white.withOpacity(.3)),
+            child: Container(
+              padding: EdgeInsets.all(40),
+              child: BlocConsumer<LoginBloc, LoginState>(
+                listener: (context, state) {
+                  if (state.isSuccess) {
+                    Navigator.of(context)
+                        .pushReplacementNamed(Screens.HOME.toString());
+                  }
+                  if (state.isFailure) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('${state.errorMessage}')));
+                  }
+                },
+                builder: (context, state) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Sign In",
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Text("Welcome back please login to your account.",
+                          style: Theme.of(context).textTheme.caption),
+                      SizedBox(
+                        height: 56,
+                      ),
+                      Container(
+                        width: 450,
+                        child: TextFormField(
+                          controller: _emailController,
+                          autocorrect: false,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) =>
+                              state.isEmailValid ? null : 'Invalid Username',
+                          decoration: InputDecoration(
+                              labelText: "Username",
+                              labelStyle: Theme.of(context).textTheme.bodyText1,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(
+                                      width: 2, color: Colors.white))),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 32,
+                      ),
+                      Container(
+                        width: 450,
+                        child: TextFormField(
+                          controller: _passwordController,
+                          autocorrect: false,
+                          obscureText: true,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) =>
+                              state.isPasswordValid ? null : 'Invalid Password',
+                          decoration: InputDecoration(
+                              labelText: "Password",
+                              labelStyle: Theme.of(context).textTheme.bodyText1,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(
+                                      width: 2, color: Colors.white))),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 56,
+                      ),
+                      Container(
+                        width: 450,
+                        child: TextButton(
+                            onPressed:
+                                state.isFormValid ? _onLoginPressed : null,
+                            child: Text("LOGIN",
+                                style: Theme.of(context).textTheme.button)),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      GoogleLoginButton(),
+                    ],
+                  );
+                },
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -171,12 +181,16 @@ class _LoginFormState extends State<LoginForm> {
 class GoogleLoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return TextButton.icon(
-      icon: Icon(FontAwesomeIcons.google),
-      onPressed: () {
-        BlocProvider.of<LoginBloc>(context).add(GoogleLoginClicked());
-      },
-      label: Text('Sign in with Google'),
+    return Container(
+      width: 450,
+      child: TextButton.icon(
+        icon: Icon(FontAwesomeIcons.google),
+        onPressed: () {
+          BlocProvider.of<LoginBloc>(context).add(GoogleLoginClicked());
+        },
+        label: Text('Sign in with Google',
+            style: Theme.of(context).textTheme.button),
+      ),
     );
   }
 }

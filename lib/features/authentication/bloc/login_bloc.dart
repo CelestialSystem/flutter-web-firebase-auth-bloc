@@ -40,8 +40,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       await _services.firebaseAuthService
           .signInWithEmailPassword(event.email, event.password);
       yield LoginState.success();
-    } catch (_) {
-      yield LoginState.failure();
+    } catch (e) {
+      yield LoginState.failure('$e');
     }
   }
 
@@ -50,7 +50,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       await _services.firebaseAuthService.signInWithGoogle();
       yield LoginState.success();
     } catch (e) {
-      yield LoginState.failure();
+      yield LoginState.failure('$e');
     }
   }
 }

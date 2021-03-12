@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_web_firebase/features/authentication/login_view.dart';
+import 'package:flutter_web_firebase/core/app_text_style.dart';
+import 'package:flutter_web_firebase/router/app_router.dart';
 import 'package:flutter_web_firebase/services/auth/cubit/auth_cubit.dart';
 import 'package:flutter_web_firebase/services/services.dart';
 
@@ -29,23 +30,26 @@ class _MyAppState extends State<MyApp> {
     return BlocProvider(
       create: (context) => _authCubit,
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Flutter Web Firebase Demo',
         theme: ThemeData(
             primarySwatch: Colors.blue,
+            textTheme: appTextTheme,
+            brightness: Brightness.dark,
             textButtonTheme: TextButtonThemeData(
                 style: ButtonStyle(
                     elevation: MaterialStateProperty.all(16),
-                    shadowColor: MaterialStateProperty.all(Colors.blue),
+                    shadowColor: MaterialStateProperty.all(Color(0xffa81d55)),
                     padding: MaterialStateProperty.all(
-                        EdgeInsets.symmetric(horizontal: 24, vertical: 16)),
-                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                        EdgeInsets.symmetric(horizontal: 32, vertical: 24)),
+                    backgroundColor:
+                        MaterialStateProperty.all(Color(0xffa81d55)),
                     foregroundColor: MaterialStateProperty.all(Colors.white),
                     textStyle: MaterialStateProperty.all(
                         TextStyle(decorationColor: Colors.white)),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.all(Radius.circular(24))))))),
-        home: LoginView(),
+                        borderRadius: BorderRadius.all(Radius.circular(8))))))),
+        onGenerateRoute: AppRouter.onGenerateRoute,
+        initialRoute: Screens.LOGIN.toString(),
       ),
     );
   }

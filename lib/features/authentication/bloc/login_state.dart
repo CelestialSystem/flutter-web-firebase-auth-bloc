@@ -7,13 +7,16 @@ class LoginState extends Equatable {
   final bool isSubmitting;
   final bool isSuccess;
   final bool isFailure;
+  final String errorMessage;
 
-  LoginState(
-      {this.isEmailValid,
-      this.isPasswordValid,
-      this.isSubmitting,
-      this.isSuccess,
-      this.isFailure});
+  LoginState({
+    this.isEmailValid,
+    this.isPasswordValid,
+    this.isSubmitting,
+    this.isSuccess,
+    this.isFailure,
+    this.errorMessage,
+  });
 
   bool get isFormValid => isEmailValid && isPasswordValid;
 
@@ -23,44 +26,46 @@ class LoginState extends Equatable {
     bool isSubmitting,
     bool isSuccess,
     bool isFailure,
+    String errorMessage,
   }) {
     return LoginState(
-      isEmailValid: false,
-      isPasswordValid: false,
-      isSubmitting: false,
-      isSuccess: false,
-      isFailure: false,
-    );
+        isEmailValid: false,
+        isPasswordValid: false,
+        isSubmitting: false,
+        isSuccess: false,
+        isFailure: false,
+        errorMessage: '');
   }
 
   factory LoginState.loading() {
     return LoginState(
-      isEmailValid: true,
-      isPasswordValid: true,
-      isSubmitting: true,
-      isSuccess: false,
-      isFailure: false,
-    );
+        isEmailValid: true,
+        isPasswordValid: true,
+        isSubmitting: true,
+        isSuccess: false,
+        isFailure: false,
+        errorMessage: '');
   }
 
-  factory LoginState.failure() {
+  factory LoginState.failure(String errorMessage) {
     return LoginState(
       isEmailValid: true,
       isPasswordValid: true,
       isSubmitting: false,
       isSuccess: false,
       isFailure: true,
+      errorMessage: errorMessage,
     );
   }
 
   factory LoginState.success() {
     return LoginState(
-      isEmailValid: true,
-      isPasswordValid: true,
-      isSubmitting: false,
-      isSuccess: true,
-      isFailure: false,
-    );
+        isEmailValid: true,
+        isPasswordValid: true,
+        isSubmitting: false,
+        isSuccess: true,
+        isFailure: false,
+        errorMessage: '');
   }
 
   LoginState update({
